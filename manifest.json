@@ -1,0 +1,38 @@
+{
+    "manifest_version": 3,
+    "name": "Screen/Audio Recorder",
+    "version": "1.0",
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "tabs",
+        "desktopCapture",
+        "pageCapture",
+        "tabCapture"
+    ],
+    "host_permissions": ["<all_urls>"],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_title": "Start recording"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": ["images/logo.svg"],
+            "matches": ["<all_urls>"]
+        },
+        {
+            "resources": ["images/microphone.png"],
+            "matches": ["<all_urls>"]
+        },
+        {
+            "resources": ["images/stop.png"],
+            "matches": ["<all_urls>"]
+        },
+        {
+            "resources": ["images/trash.png"],
+            "matches": ["<all_urls>"]
+        }
+    ]
+}
