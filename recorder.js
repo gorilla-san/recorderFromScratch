@@ -114,6 +114,15 @@ navigator.mediaDevices
                     (request, sender, sendResponse) => {
                         if (request.message === "stop-recording") {
                             recorder.stop();
+                            chrome.tabs.query({}, function (tabs) {
+                                var message = { message: "remove-recording" };
+                                for (var i = 0; i < tabs.length; ++i) {
+                                    chrome.tabs.sendMessage(
+                                        tabs[i].id,
+                                        message
+                                    );
+                                }
+                            });
                         }
                     }
                 );

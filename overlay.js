@@ -20,32 +20,21 @@ if (document.getElementById("my-overlay")) {
     document.body.appendChild(overlay);
 }
 
-overlay.addEventListener("click", (event) => {
-    if (event.target === overlay) {
-        overlay.remove();
+// Listen for the 'toggle-overlay' message
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.message === "toggle-overlay") {
+        // Toggle the visibility of the overlay
+        let overlay = document.getElementById("my-overlay");
+        if (overlay) {
+            overlay.style.display =
+                overlay.style.display === "none" ? "block" : "none";
+        }
     }
 });
 
-// listen for message from recorder.js now-recording and start 5 minute timer
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.message === "now-recording") {
-        // countdown timeRemaining from 05:00 to 00:00
-        console.log("now-recording");
-        let timeRemaining = 300;
-        var timer = setInterval(function () {
-            var minutes = Math.floor(timeRemaining / 60);
-            var seconds = timeRemaining - minutes * 60;
-            if (seconds < 10) {
-                seconds = "0" + seconds;
-            }
-            var countdown = minutes + ":" + seconds;
-            document.getElementById("countdown").innerHTML = countdown;
-            timeRemaining--;
-            if (timeRemaining < 0) {
-                clearInterval(timer);
-                document.getElementById("countdown").innerHTML = "00:00";
-            }
-        }, 1000);
+overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) {
+        overlay.style.display = "none";
     }
 });
 
@@ -162,8 +151,8 @@ startButton.addEventListener("click", () => {
         message: "start-recording",
         microphone: document.getElementById("microphone").value,
     });
-    // remove sidebar
-    sidebar.remove();
+    // remove overlay.js from page
+    overlay.style.display = "none";
 });
 
 // add icon to start recording button
@@ -275,3 +264,8 @@ trashIcon.style.height = "auto";
 trashIcon.src = chrome.runtime.getURL("images/trash.png");
 
 trashButton.appendChild(trashIcon);
+
+chrome.runtime.sendMessage({
+    message: "script-injected",
+    scriptName: "overlay.js",
+});
