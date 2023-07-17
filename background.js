@@ -56,10 +56,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                         }
                         injectedScripts[activeInfo.tabId].push("recording.js");
                     });
-            } else {
-                chrome.runtime.sendMessage({
-                    message: "toggle-recording",
-                });
             }
         };
 

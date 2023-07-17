@@ -1,55 +1,3 @@
-// const button = document.querySelector("button");
-// button.addEventListener("click", () => {
-//     window.close();
-// });
-// // on load ask user to choose media stream
-// navigator.mediaDevices
-//     .getDisplayMedia({
-//         video: true,
-//         audio: true,
-//     })
-//     .then((stream) => {
-//         // preview the video
-//         // const video = document.createElement("video");
-//         // video.srcObject = stream;
-//         // video.autoplay = true;
-//         // document.body.appendChild(video);
-//         // start recording
-//         const recorder = new MediaRecorder(stream);
-//         const chunks = [];
-//         recorder.ondataavailable = (e) => chunks.push(e.data);
-//         recorder.onstop = (e) => {
-//             const completeBlob = new Blob(chunks, {
-//                 type: chunks[0].type,
-//             });
-//             const videoURL = URL.createObjectURL(completeBlob);
-//             const a = document.createElement("a");
-//             a.href = videoURL;
-//             a.download = "recording.webm";
-//             a.click();
-//             window.close();
-//         };
-//         recorder.start();
-//         chrome.tabs.query({}, function (tabs) {
-//             var message = { message: "now-recording" };
-//             for (var i = 0; i < tabs.length; ++i) {
-//                 chrome.tabs.sendMessage(tabs[i].id, message);
-//             }
-//         });
-
-//         setTimeout(() => {
-//             recorder.stop();
-//         }, 300000);
-//         // listen for 'stop-recording' message from overlay.js
-//         chrome.runtime.onMessage.addListener(
-//             (request, sender, sendResponse) => {
-//                 if (request.message === "stop-recording") {
-//                     recorder.stop();
-//                 }
-//             }
-//         );
-//     });
-
 const button = document.querySelector("button");
 
 button.addEventListener("click", () => {
@@ -113,7 +61,6 @@ navigator.mediaDevices
                 chrome.runtime.onMessage.addListener(
                     (request, sender, sendResponse) => {
                         if (request.message === "stop-recording") {
-                            recorder.stop();
                             chrome.tabs.query({}, function (tabs) {
                                 var message = { message: "remove-recording" };
                                 for (var i = 0; i < tabs.length; ++i) {
@@ -123,6 +70,7 @@ navigator.mediaDevices
                                     );
                                 }
                             });
+                            recorder.stop();
                         }
                     }
                 );

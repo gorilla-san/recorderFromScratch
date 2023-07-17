@@ -112,9 +112,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.message === "toggle-recording") {
-        recordingStrip.style.display =
-            recordingStrip.style.display === "none" ? "flex" : "none";
+    if (request.message === "now-recording") {
+        recordingStrip.style.display = "flex";
     }
 });
 
