@@ -37,13 +37,53 @@ navigator.mediaDevices
                     const completeBlob = new Blob(chunks, {
                         type: chunks[0].type,
                     });
-                    const videoURL = URL.createObjectURL(completeBlob);
-                    const a = document.createElement("a");
-                    a.href = videoURL;
-                    a.download = "recording.webm";
-                    a.click();
-                    window.close();
+
+                    // Create a FormData object and append the file
+                    const formData = new FormData();
+                    formData.append("video", completeBlob, "recording.webm");
+                    formData.append("project", "project name");
+
+                    // Send the FormData object to the server
+                    // First, create a new project
+                    fetch("http://localhost:8080/projects", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ name: "project" }),
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            console.log(data);
+                            const projectId = data.project.id;
+
+                            // Create a FormData object and append the file
+                            const formData = new FormData();
+                            formData.append(
+                                "file",
+                                completeBlob,
+                                "recording.webm"
+                            );
+
+                            // Send the FormData object to the server
+                            return fetch(
+                                `http://localhost:8080/projects/${projectId}/files`,
+                                {
+                                    method: "POST",
+                                    body: formData,
+                                }
+                            );
+                        })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            console.log(data);
+                            window.close();
+                        })
+                        .catch((error) => {
+                            console.error("Error:", error);
+                        });
                 };
+
                 recorder.start();
 
                 chrome.tabs.query({}, function (tabs) {
