@@ -1,5 +1,6 @@
 let activeTabListener = null;
 let injectedScripts = {};
+let timeLeft;
 
 chrome.action.onClicked.addListener((tab) => {
     if (
@@ -59,7 +60,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             }
         };
 
-        let timeLeft = 300; // 5 minutes in seconds
+        timeLeft = 300; // 5 minutes in seconds
         countdownInterval = setInterval(() => {
             chrome.tabs.query({}, (tabs) => {
                 tabs.forEach((tab) => {
@@ -83,5 +84,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         }
 
         if (countdownInterval) clearInterval(countdownInterval);
+    } else if (request.message === "metadata") {
+        let metaData = request.metadata;
+        let duration = 300 - timeLeft;
+        let minutes = Math.floor(duration / 60);
+        let seconds = duration % 60;
+        let timeStamp = `${minutes.toString().padStart(2, "0")}:${seconds
+            .toString()
+            .padStart(2, "0")}`;
+        metaData.timeStamp = timeStamp;
+        chrome.runtime.sendMessage({
+            message: "meta&stamp",
+            metadata: metaData,
+        });
     }
 });

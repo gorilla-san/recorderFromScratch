@@ -1,4 +1,5 @@
 const button = document.querySelector("button");
+let metaData = [];
 
 button.addEventListener("click", () => {
     window.close();
@@ -38,12 +39,6 @@ navigator.mediaDevices
                         type: chunks[0].type,
                     });
 
-                    // Create a FormData object and append the file
-                    const formData = new FormData();
-                    formData.append("video", completeBlob, "recording.webm");
-                    formData.append("project", "project name");
-
-                    // Send the FormData object to the server
                     // First, create a new project
                     fetch("http://localhost:8080/projects", {
                         method: "POST",
@@ -65,6 +60,11 @@ navigator.mediaDevices
                                 "recording.webm"
                             );
 
+                            console.log(
+                                `metaData: ${JSON.stringify(metaData)}`
+                            );
+                            formData.append("data", JSON.stringify(metaData));
+
                             // Send the FormData object to the server
                             return fetch(
                                 `http://localhost:8080/projects/${projectId}/files`,
@@ -76,7 +76,6 @@ navigator.mediaDevices
                         })
                         .then((response) => response.json())
                         .then((data) => {
-                            console.log(data);
                             window.close();
                         })
                         .catch((error) => {
@@ -111,6 +110,13 @@ navigator.mediaDevices
                                 }
                             });
                             recorder.stop();
+                        }
+                    }
+                );
+                chrome.runtime.onMessage.addListener(
+                    (request, sender, sendResponse) => {
+                        if (request.message === "meta&stamp") {
+                            metaData.push(request.metadata);
                         }
                     }
                 );

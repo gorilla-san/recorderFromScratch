@@ -126,3 +126,49 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             .padStart(2, "0")}`;
     }
 });
+
+document.addEventListener(
+    "click",
+    function (event) {
+        // Ensure click is inside document body
+        if (document.body.contains(event.target)) {
+            // Get the target element
+            const target = event.target;
+
+            // Construct the XPath
+            let xpath = getElementXPath(target);
+
+            // Send message to background script with screenshotUrl
+            chrome.runtime.sendMessage({
+                message: "metadata",
+                metadata: {
+                    xpath,
+                    id: target.id,
+                    className: target.className,
+                    innerText: target.innerText,
+                    value: target.value,
+                },
+            });
+        }
+    },
+    true
+);
+
+function getElementXPath(elt) {
+    let path = "";
+    for (; elt && elt.nodeType == 1; elt = elt.parentNode) {
+        let idx = getIndex(elt);
+        let xname = elt.tagName;
+        if (idx > 1) xname += "[" + idx + "]";
+        path = "/" + xname + path;
+    }
+    return path;
+}
+
+function getIndex(elt) {
+    let count = 1;
+    for (let sib = elt.previousSibling; sib; sib = sib.previousSibling) {
+        if (sib.nodeType == 1 && sib.tagName == elt.tagName) count++;
+    }
+    return count;
+}
