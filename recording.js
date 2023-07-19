@@ -131,7 +131,10 @@ document.addEventListener(
     "click",
     function (event) {
         // Ensure click is inside document body
-        if (document.body.contains(event.target)) {
+        if (
+            document.body.contains(event.target) && // Ensure click is not on recording strip or its children
+            !recordingStrip.contains(event.target)
+        ) {
             // Get the target element
             const target = event.target;
 
