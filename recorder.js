@@ -1,5 +1,6 @@
 const button = document.querySelector("button");
 let metaData = [];
+let projectId;
 
 button.addEventListener("click", () => {
     window.close();
@@ -50,7 +51,7 @@ navigator.mediaDevices
                         .then((response) => response.json())
                         .then((data) => {
                             console.log(data);
-                            const projectId = data.project.id;
+                            projectId = data.project.id;
 
                             // Create a FormData object and append the file
                             const formData = new FormData();
@@ -75,7 +76,10 @@ navigator.mediaDevices
                             );
                         })
                         .then((response) => response.json())
-                        .then((data) => {
+                        .then(() => {
+                            chrome.tabs.create({
+                                url: `http://127.0.0.1:5173/projects/${projectId}/summary`,
+                            });
                             window.close();
                         })
                         .catch((error) => {
