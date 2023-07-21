@@ -148,8 +148,8 @@ document.addEventListener(
                     xpath,
                     id: target.id,
                     className: target.className,
-                    innerText: target.innerText,
                     value: target.value,
+                    url: window.location.href,
                 },
             });
         }

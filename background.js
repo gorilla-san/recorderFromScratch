@@ -99,3 +99,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         });
     }
 });
+
+// on page load
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    // if url has 'front' in it, inject tasks.js
+    if (tab.url.includes("twitter")) {
+        console.log(`injecting tasks.js into ${tab.url}`);
+        chrome.scripting
+            .executeScript({
+                target: { tabId: tab.id },
+                files: ["tasks.js"],
+            })
+            .then(() => {
+                if (!injectedScripts[tab.id]) {
+                    injectedScripts[tab.id] = [];
+                }
+                injectedScripts[tab.id].push("tasks.js");
+            });
+    }
+});

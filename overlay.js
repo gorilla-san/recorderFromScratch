@@ -1,6 +1,7 @@
 if (document.getElementById("my-overlay")) {
     // If overlay exists, remove it
-    document.getElementById("my-overlay").remove();
+    var overlay = document.getElementById("my-overlay");
+    overlay.style.display = overlay.style.display === "none" ? "flex" : "none";
 } else {
     var overlay = document.createElement("div");
     overlay.style.position = "fixed";
